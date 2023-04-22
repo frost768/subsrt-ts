@@ -38,7 +38,7 @@ const parse = (content: string, options: ParseOptions) => {
     for (let i = 0; i < parts.length; i++) {
         // WebVTT data
         const regex =
-            /^([^\r\n]+\r?\n)?((?:\d{1,2}:)?\d{1,2}:\d{1,2}(?:[.,]\d{1,3})?)\s*-->\s*((?:\d{1,2}:)?\d{1,2}:\d{1,2}(?:[.,]\d{1,3})?)\s?.*\r?\n([\s\S]*)$/;
+            /^([^\r\n]+\r?\n)?((?:\d{1,2}:)?\d{1,2}:\d{1,2}(?:[.,]\d{1,3})?)\s*-->\s*((?:\d{1,2}:)?\d{1,2}:\d{1,2}(?:[.,]\d{1,3})?)[ ]*.*\r?\n([\s\S]*)$/;
         const match = regex.exec(parts[i]);
         if (match) {
             const caption = <ContentCaption>{};
@@ -50,8 +50,7 @@ const parse = (content: string, options: ParseOptions) => {
             caption.start = helper.toMilliseconds(match[2]);
             caption.end = helper.toMilliseconds(match[3]);
             caption.duration = caption.end - caption.start;
-            const lines = match[4].split(/\r?\n/);
-            caption.content = lines.join(" ");
+            caption.content = match[4];
             caption.text = caption.content
                 .replace(/<[^>]+>/g, "") // <b>bold</b> or <i>italic</i>
                 .replace(/\{[^}]+\}/g, ""); // {b}bold{/b} or {i}italic{/i}
